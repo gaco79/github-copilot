@@ -1,0 +1,86 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_service%]",
+      "could_not_register": "Could not register integration with GitHub. Please try again.",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    },
+    "progress": {
+      "wait_for_device": "Open {url}, and paste the following code to authorize the integration: \n```\n{code}\n```"
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "step": {
+      "device": {
+        "title": "Authenticate with GitHub"
+      }
+    }
+  },
+  "config_subentries": {
+    "ai_task_data": {
+      "abort": {
+        "entry_not_loaded": "Cannot add things while the configuration is disabled.",
+        "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
+      },
+      "entry_type": "AI task",
+      "initiate_flow": {
+        "reconfigure": "Reconfigure AI task",
+        "user": "Add AI task"
+      },
+      "step": {
+        "advanced": {
+          "data": {
+            "max_tokens": "Maximum tokens to return in response",
+            "temperature": "Temperature",
+            "top_p": "Top P"
+          },
+          "title": "Advanced settings"
+        },
+        "init": {
+          "data": {
+            "chat_model": "[%key:common::generic::model%]",
+            "name": "[%key:common::config_flow::data::name%]",
+            "recommended": "Recommended model settings"
+          }
+        }
+      }
+    },
+    "conversation": {
+      "abort": {
+        "entry_not_loaded": "Cannot add things while the configuration is disabled.",
+        "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
+      },
+      "entry_type": "Conversation agent",
+      "initiate_flow": {
+        "reconfigure": "Reconfigure conversation agent",
+        "user": "Add conversation agent"
+      },
+      "step": {
+        "advanced": {
+          "data": {
+            "max_tokens": "Maximum tokens to return in response",
+            "temperature": "Temperature",
+            "top_p": "Top P"
+          },
+          "title": "Advanced settings"
+        },
+        "init": {
+          "data": {
+            "chat_model": "[%key:common::generic::model%]",
+            "llm_hass_api": "[%key:common::config_flow::data::llm_hass_api%]",
+            "name": "[%key:common::config_flow::data::name%]",
+            "prompt": "[%key:common::config_flow::data::prompt%]",
+            "recommended": "Recommended model settings"
+          },
+          "data_description": {
+            "chat_model": "The GitHub Models model ID to use, e.g. openai/gpt-4o",
+            "prompt": "Instruct how the LLM should respond. This can be a template."
+          }
+        }
+      }
+    }
+  }
+}
