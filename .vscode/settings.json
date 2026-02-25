@@ -1,3 +1,5 @@
 {
-    "git.openRepositoryInParentFolders": "never"
+    "git.openRepositoryInParentFolders": "never",
+    "githubPullRequests.defaultMergeMethod": "squash",
+    "githubPullRequests.deleteBranchAfterMerge": true
 }
