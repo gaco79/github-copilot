@@ -29,6 +29,7 @@ from homeassistant.components import conversation
 from homeassistant.config_entries import ConfigSubentry
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr, llm
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 
 from .const import (
@@ -36,6 +37,7 @@ from .const import (
     DOMAIN,
     LOGGER,
     RECOMMENDED_CHAT_MODEL,
+    SIGNAL_RATE_LIMIT_UPDATED,
 )
 
 if TYPE_CHECKING:
@@ -223,7 +225,7 @@ class GitHubCopilotBaseLLMEntity(Entity):
         """Generate a response for the chat log using the GitHub Models API."""
         options = self.subentry.data
         model = options.get(CONF_CHAT_MODEL, RECOMMENDED_CHAT_MODEL)
-        client: openai.AsyncOpenAI = self.entry.runtime_data
+        client: openai.AsyncOpenAI = self.entry.runtime_data.client
 
         # Pre-process image attachments from user content before entering the loop
         attachment_map: dict[int, list[ChatCompletionContentPartImageParam]] = {}
@@ -304,6 +306,32 @@ class GitHubCopilotBaseLLMEntity(Entity):
             except openai.OpenAIError as err:
                 LOGGER.error("Error talking to GitHub Models: %s", err)
                 raise HomeAssistantError("Error talking to GitHub Models") from err
+
+            # Extract rate limit headers from the response
+            try:
+                rl = stream.response.headers
+                self.entry.runtime_data.rate_limit.update(
+                    {
+                        "limit": rl.get("x-ratelimit-limit"),
+                        "remaining": rl.get("x-ratelimit-remaining"),
+                        "used": rl.get("x-ratelimit-used"),
+                        "reset": rl.get("x-ratelimit-reset"),
+                        "resource": rl.get("x-ratelimit-resource"),
+                    }
+                )
+                LOGGER.debug(
+                    "Rate limit: limit=%s remaining=%s used=%s reset=%s",
+                    self.entry.runtime_data.rate_limit.get("limit"),
+                    self.entry.runtime_data.rate_limit.get("remaining"),
+                    self.entry.runtime_data.rate_limit.get("used"),
+                    self.entry.runtime_data.rate_limit.get("reset"),
+                )
+                async_dispatcher_send(
+                    self.hass,
+                    f"{SIGNAL_RATE_LIMIT_UPDATED}_{self.entry.entry_id}",
+                )
+            except Exception:  # noqa: BLE001
+                pass
 
             [
                 _
