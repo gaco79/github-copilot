@@ -22,7 +22,7 @@
           "chat_model": "Model"
         },
         "data_description": {
-          "chat_model": "{model_summary}"
+          "chat_model": "Select a model from the GitHub Models catalog"
         },
         "title": "Select model"
       }
