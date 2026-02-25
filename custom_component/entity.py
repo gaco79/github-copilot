@@ -218,9 +218,9 @@ class GitHubCopilotBaseLLMEntity(Entity):
             kwargs: dict[str, Any] = {
                 "model": model,
                 "messages": messages,
-                "max_completion_tokens": options.get(CONF_MAX_TOKENS, RECOMMENDED_MAX_TOKENS),
-                "temperature": options.get(CONF_TEMPERATURE, RECOMMENDED_TEMPERATURE),
-                "top_p": options.get(CONF_TOP_P, RECOMMENDED_TOP_P),
+                #"max_completion_tokens": options.get(CONF_MAX_TOKENS, RECOMMENDED_MAX_TOKENS),
+                #"temperature": options.get(CONF_TEMPERATURE, RECOMMENDED_TEMPERATURE),
+                #"top_p": options.get(CONF_TOP_P, RECOMMENDED_TOP_P),
                 "stream": True,
             }
 
