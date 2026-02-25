@@ -1,3 +1,9 @@
+![GitHub Release](https://img.shields.io/github/v/release/gaco79/github-copilot?style=for-the-badge)
+![Downloads](https://img.shields.io/github/downloads/gaco79/github-copilot/total?style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/gaco79/github-copilot?style=for-the-badge)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/gaco79/github-copilot/cd.yml?style=for-the-badge)
+[![BuyMeACoffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&style=for-the-badge)](https://www.buymeacoffee.com/gaco79)
+
 # GitHub Copilot Home Assistant Integration
 
 This custom component provides a Home Assistent integration to interact with GitHub Copilot.
