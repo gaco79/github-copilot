@@ -23,26 +23,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create changes
+      - name: Create changelog
         shell: bash
-        run: touch CHANGES.md
+        run: touch CHANGELOG.md
+
       - name: Generate a changelog
-        uses: orhun/git-cliff-action@v1
+        uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
           config: cliff.toml
           args: -vv --latest --strip header
         env:
-          OUTPUT: CHANGES.md
-      - name: Set the release body
-        id: release
-        shell: bash
-        run: |
-          r=$(cat ${{ steps.git-cliff.outputs.changelog }})
-          r="${r//'%'/'%25'}"     # Multiline escape sequences for %
-          r="${r//$'\n'/'%0A'}"   # Multiline escape sequences for '\n'
-          r="${r//$'\r'/'%0D'}"   # Multiline escape sequences for '\r'
-          echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
 
       - name: "ZIP the integration directory"
         shell: "bash"
@@ -50,7 +43,10 @@ jobs:
           cd "${{ github.workspace }}/custom_components/gaco79_github_copilot"
           zip github_copilot.zip -r ./
 
-      - name: "Upload the ZIP file to the release"
-        uses: softprops/action-gh-release@v0.1.15
+      - name: Upload the binary releases
+        uses: svenstaro/upload-release-action@v2
         with:
-          files: ${{ github.workspace }}/custom_components/gaco79_github_copilot/github_copilot.zip
+          file: ${{ github.workspace }}/custom_components/gaco79_github_copilot/github_copilot.zip
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          body: ${{ steps.git-cliff.outputs.content }}
