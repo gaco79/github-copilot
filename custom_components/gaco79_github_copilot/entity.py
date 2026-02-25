@@ -133,6 +133,7 @@ async def _transform_stream(
     started = False
 
     async for chunk in stream:
+        LOGGER.debug("GitHub Models API response chunk: %s", chunk.model_dump())
         if not chunk.choices:
             continue
 
