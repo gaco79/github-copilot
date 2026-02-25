@@ -17,4 +17,5 @@ This custom component provides a Home Assistent integration to interact with Git
 
 ## Environment
 
-Use `docker compose` to spin up an instance of Home Assistant. It should be possible to add the integration there.
+ * Place code for this integration in the custom_component/ folder
+ * Use `docker compose` to spin up an instance of Home Assistant. It should be possible to add the integration there.
