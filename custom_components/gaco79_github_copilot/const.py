@@ -8,7 +8,7 @@ from typing import Any
 from homeassistant.const import CONF_LLM_HASS_API
 from homeassistant.helpers import llm
 
-DOMAIN = "github_copilot"
+DOMAIN = "gaco79_github_copilot"
 LOGGER: logging.Logger = logging.getLogger(__package__)
 
 # GitHub OAuth App Client ID (device flow) - same app used by the HA GitHub integration

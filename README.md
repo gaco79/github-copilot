@@ -8,13 +8,15 @@
 
 This custom component provides a Home Assistent integration to interact with GitHub Copilot.
 
-A choice of AI models is available. Make sure to consult [GitHub documentation](https://docs.github.com/en/copilot/concepts/billing/copilot-requests#model-multipliers) for pricing.
+A choice of AI models is available. Make sure to consult [GitHub documentation](https://docs.github.com/en/copilot/concepts/billing/copilot-requests#model-multipliers) for pricing. SOME MODELS ARE MUCH MORE EXPENSIVE THAN OTHERS!
 
 Conversation agent and AI Task entities. Different entities can use different models.
 
 It's early days and although I think it's working, there will be issues. If you find a problem, please help by `opening the integration in HACS`, clicking the `three-dot menu` at the top right, and then clicking `Open Issue`
 
 ## Installation
+
+You'll need an existing [GitHub](https://github.com/) account.
 
 ### HACS (recommended)
 
