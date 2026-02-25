@@ -29,15 +29,9 @@ from homeassistant.helpers.entity import Entity
 
 from .const import (
     CONF_CHAT_MODEL,
-    CONF_MAX_TOKENS,
-    CONF_TEMPERATURE,
-    CONF_TOP_P,
     DOMAIN,
     LOGGER,
     RECOMMENDED_CHAT_MODEL,
-    RECOMMENDED_MAX_TOKENS,
-    RECOMMENDED_TEMPERATURE,
-    RECOMMENDED_TOP_P,
 )
 
 if TYPE_CHECKING:
@@ -218,9 +212,6 @@ class GitHubCopilotBaseLLMEntity(Entity):
             kwargs: dict[str, Any] = {
                 "model": model,
                 "messages": messages,
-                #"max_completion_tokens": options.get(CONF_MAX_TOKENS, RECOMMENDED_MAX_TOKENS),
-                #"temperature": options.get(CONF_TEMPERATURE, RECOMMENDED_TEMPERATURE),
-                #"top_p": options.get(CONF_TOP_P, RECOMMENDED_TOP_P),
                 "stream": True,
             }
 

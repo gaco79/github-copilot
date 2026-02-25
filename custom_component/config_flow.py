@@ -32,8 +32,6 @@ from homeassistant.helpers.aiohttp_client import (
     async_get_clientsession,
 )
 from homeassistant.helpers.selector import (
-    NumberSelector,
-    NumberSelectorConfig,
     SelectOptionDict,
     SelectSelector,
     SelectSelectorConfig,
@@ -43,11 +41,7 @@ from homeassistant.helpers.selector import (
 
 from .const import (
     CONF_CHAT_MODEL,
-    CONF_MAX_TOKENS,
     CONF_PROMPT,
-    CONF_RECOMMENDED,
-    CONF_TEMPERATURE,
-    CONF_TOP_P,
     DEFAULT_AI_TASK_NAME,
     DEFAULT_CONVERSATION_NAME,
     DOMAIN,
@@ -57,9 +51,6 @@ from .const import (
     RECOMMENDED_AI_TASK_OPTIONS,
     RECOMMENDED_CHAT_MODEL,
     RECOMMENDED_CONVERSATION_OPTIONS,
-    RECOMMENDED_MAX_TOKENS,
-    RECOMMENDED_TEMPERATURE,
-    RECOMMENDED_TOP_P,
 )
 
 
@@ -319,80 +310,25 @@ class GitHubCopilotSubentryFlowHandler(ConfigSubentryFlow):
                 }
             )
 
-        step_schema[
-            vol.Required(CONF_RECOMMENDED, default=options.get(CONF_RECOMMENDED, False))
-        ] = bool
-
         if user_input is not None:
             if not user_input.get(CONF_LLM_HASS_API):
                 user_input.pop(CONF_LLM_HASS_API, None)
 
-            if user_input[CONF_RECOMMENDED]:
-                if self._is_new:
-                    data = user_input.copy()
-                    title = data.pop(CONF_NAME, DEFAULT_CONVERSATION_NAME)
-                    # Ensure recommended advanced options are included when using recommended settings
-                    data.setdefault(CONF_MAX_TOKENS, RECOMMENDED_MAX_TOKENS)
-                    data.setdefault(CONF_TEMPERATURE, RECOMMENDED_TEMPERATURE)
-                    data.setdefault(CONF_TOP_P, RECOMMENDED_TOP_P)
-                    return self.async_create_entry(
-                        title=title,
-                        data=data,
-                    )
-                return self.async_update_and_abort(
-                    self._get_entry(),
-                    self._get_reconfigure_subentry(),
-                    data=user_input,
-                )
-
-            options.update(user_input)
-            if CONF_LLM_HASS_API in options and CONF_LLM_HASS_API not in user_input:
-                options.pop(CONF_LLM_HASS_API)
-            return await self.async_step_advanced()
-
-        return self.async_show_form(
-            step_id="init",
-            data_schema=self.add_suggested_values_to_schema(
-                vol.Schema(step_schema), options
-            ),
-        )
-
-    async def async_step_advanced(
-        self, user_input: dict[str, Any] | None = None
-    ) -> SubentryFlowResult:
-        """Manage advanced model options."""
-        options = self.options
-
-        step_schema: dict[Any, Any] = {
-            vol.Optional(
-                CONF_MAX_TOKENS,
-                default=RECOMMENDED_MAX_TOKENS,
-            ): int,
-            vol.Optional(
-                CONF_TOP_P,
-                default=RECOMMENDED_TOP_P,
-            ): NumberSelector(NumberSelectorConfig(min=0, max=1, step=0.05)),
-            vol.Optional(
-                CONF_TEMPERATURE,
-                default=RECOMMENDED_TEMPERATURE,
-            ): NumberSelector(NumberSelectorConfig(min=0, max=1, step=0.05)),
-        }
-
-        if user_input is not None:
-            options.update(user_input)
             if self._is_new:
+                data = user_input.copy()
+                title = data.pop(CONF_NAME, DEFAULT_CONVERSATION_NAME)
                 return self.async_create_entry(
-                    title=options.pop(CONF_NAME, DEFAULT_CONVERSATION_NAME),
-                    data=options,
+                    title=title,
+                    data=data,
                 )
             return self.async_update_and_abort(
                 self._get_entry(),
                 self._get_reconfigure_subentry(),
-                data=options,
+                data=user_input,
             )
 
         return self.async_show_form(
-            step_id="advanced",
+            step_id="init",
             data_schema=self.add_suggested_values_to_schema(
                 vol.Schema(step_schema), options
             ),
