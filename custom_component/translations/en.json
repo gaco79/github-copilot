@@ -40,19 +40,10 @@
         "user": "Add AI task"
       },
       "step": {
-        "advanced": {
-          "data": {
-            "max_tokens": "Maximum tokens to return in response",
-            "temperature": "Temperature",
-            "top_p": "Top P"
-          },
-          "title": "Advanced settings"
-        },
         "init": {
           "data": {
             "chat_model": "Model",
-            "name": "Name",
-            "recommended": "Recommended model settings"
+            "name": "Name"
           }
         }
       }
@@ -68,21 +59,12 @@
         "user": "Add conversation agent"
       },
       "step": {
-        "advanced": {
-          "data": {
-            "max_tokens": "Maximum tokens to return in response",
-            "temperature": "Temperature",
-            "top_p": "Top P"
-          },
-          "title": "Advanced settings"
-        },
         "init": {
           "data": {
             "chat_model": "Model",
             "llm_hass_api": "Control Home Assistant",
             "name": "Name",
-            "prompt": "Prompt",
-            "recommended": "Recommended model settings"
+            "prompt": "Prompt"
           },
           "data_description": {
             "chat_model": "The GitHub Models model ID to use, e.g. openai/gpt-4o",

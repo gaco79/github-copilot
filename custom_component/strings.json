@@ -40,19 +40,10 @@
         "user": "Add AI task"
       },
       "step": {
-        "advanced": {
-          "data": {
-            "max_tokens": "Maximum tokens to return in response",
-            "temperature": "Temperature",
-            "top_p": "Top P"
-          },
-          "title": "Advanced settings"
-        },
         "init": {
           "data": {
             "chat_model": "[%key:common::generic::model%]",
-            "name": "[%key:common::config_flow::data::name%]",
-            "recommended": "Recommended model settings"
+            "name": "[%key:common::config_flow::data::name%]"
           }
         }
       }
@@ -68,21 +59,12 @@
         "user": "Add conversation agent"
       },
       "step": {
-        "advanced": {
-          "data": {
-            "max_tokens": "Maximum tokens to return in response",
-            "temperature": "Temperature",
-            "top_p": "Top P"
-          },
-          "title": "Advanced settings"
-        },
         "init": {
           "data": {
             "chat_model": "[%key:common::generic::model%]",
             "llm_hass_api": "[%key:common::config_flow::data::llm_hass_api%]",
             "name": "[%key:common::config_flow::data::name%]",
-            "prompt": "[%key:common::config_flow::data::prompt%]",
-            "recommended": "Recommended model settings"
+            "prompt": "[%key:common::config_flow::data::prompt%]"
           },
           "data_description": {
             "chat_model": "The GitHub Models model ID to use, e.g. openai/gpt-4o",
