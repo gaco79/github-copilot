@@ -1,0 +1,25 @@
+{
+    "domain": "gaco79_github_copilot",
+    "name": "GitHub Copilot",
+    "after_dependencies": [
+        "assist_pipeline",
+        "intent"
+    ],
+    "codeowners": [
+        "@gaco79"
+    ],
+    "config_flow": true,
+    "dependencies": [
+        "conversation"
+    ],
+    "documentation": "https://github.com/gaco79/github-copilot",
+    "issue_tracker": "https://github.com/gaco79/github-copilot/issues",
+    "integration_type": "service",
+    "iot_class": "cloud",
+    "requirements": [
+        "openai>=1.0.0",
+        "aiogithubapi>=22.11.0",
+        "voluptuous_openapi"
+    ],
+    "version": "0.0.1"
+}

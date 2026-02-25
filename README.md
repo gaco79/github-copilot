@@ -1,21 +1,30 @@
+![GitHub Release](https://img.shields.io/github/v/release/gaco79/github-copilot?style=for-the-badge)
+![Downloads](https://img.shields.io/github/downloads/gaco79/github-copilot/total?style=for-the-badge)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/gaco79/github-copilot?style=for-the-badge)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/gaco79/github-copilot/cd.yml?style=for-the-badge)
+[![BuyMeACoffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&style=for-the-badge)](https://www.buymeacoffee.com/gaco79)
+
 # GitHub Copilot Home Assistant Integration
 
 This custom component provides a Home Assistent integration to interact with GitHub Copilot.
 
-## Roadmap
+A choice of AI models is available. Make sure to consult [GitHub documentation](https://docs.github.com/en/copilot/concepts/billing/copilot-requests#model-multipliers) for pricing.
 
-[ ] Allow OAuth login to GitHub
-  * Existing Github integration which already achieves this is provided in information/github/ folder
-  
-[ ] Allow user to choose which model should be used to fulfil requests for a given service
-  * List of available models availabe via GitHub REST API. See information/github-REST-api/ folder for details
-  * Provide model information from the API.
-  * Link to [GitHub Model Multipliers](https://docs.github.com/en/copilot/concepts/billing/copilot-requests#model-multipliers) to explain costs of using different models.
-  * Allow user to create multiple services, each using a different model
+Conversation agent and AI Task entities. Different entities can use different models.
 
-[ ] Each service should provide a `conversation agent` and `AI Task` device / entity.
+It's early days and although I think it's working, there will be issues. If you find a problem, please help by `opening the integration in HACS`, clicking the `three-dot menu` at the top right, and then clicking `Open Issue`
 
-## Environment
+## Installation
 
- * Place code for this integration in the custom_component/ folder
- * Use `docker compose` to spin up an instance of Home Assistant. It should be possible to add the integration there.
+### HACS (recommended)
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=gaco79&repository=github-copilot&category=integration)
+
+# Development Environment
+
+If you want to help develop this integration
+
+ * Clone this repo
+ * Make sure you have docker installed
+ * Place code for this integration in the custom_components/github_copilot/ folder
+ * Use `docker compose` to spin up an instance of Home Assistant. It should now be possible to add the integration there.
