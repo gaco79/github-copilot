@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.httpx_client import get_async_client
 
-from .const import DOMAIN, GITHUB_MODELS_BASE_URL, LOGGER
+from .const import GITHUB_MODELS_BASE_URL
 
 PLATFORMS = (Platform.AI_TASK, Platform.CONVERSATION)
 
@@ -51,7 +51,10 @@ async def async_unload_entry(
 
 async def async_reload_entry(
     hass: HomeAssistant, entry: GitHubCopilotConfigEntry
-) -> None:
+) -> bool:
     """Reload config entry."""
-    await async_unload_entry(hass, entry)
-    await async_setup_entry(hass, entry)
+    unloaded = await async_unload_entry(hass, entry)
+    if not unloaded:
+        LOGGER.error("Failed to unload GitHub Copilot config entry during reload")
+        return False
+    return await async_setup_entry(hass, entry)

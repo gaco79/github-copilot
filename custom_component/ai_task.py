@@ -56,12 +56,17 @@ class GitHubCopilotAITaskEntity(
         """Handle a generate data task."""
         await self._async_handle_chat_log(chat_log, task.structure)
 
-        if not isinstance(chat_log.content[-1], conversation.AssistantContent):
+        if not chat_log.content:
+            raise HomeAssistantError("Chat log has no content")
+
+        last_content = chat_log.content[-1]
+
+        if not isinstance(last_content, conversation.AssistantContent):
             raise HomeAssistantError(
                 "Last content in chat log is not an AssistantContent"
             )
 
-        text = chat_log.content[-1].content or ""
+        text = last_content.content or ""
 
         if not task.structure:
             return ai_task.GenDataTaskResult(

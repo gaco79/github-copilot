@@ -311,9 +311,15 @@ class GitHubCopilotSubentryFlowHandler(ConfigSubentryFlow):
 
             if user_input[CONF_RECOMMENDED]:
                 if self._is_new:
+                    data = user_input.copy()
+                    title = data.pop(CONF_NAME, DEFAULT_CONVERSATION_NAME)
+                    # Ensure recommended advanced options are included when using recommended settings
+                    data.setdefault(CONF_MAX_TOKENS, RECOMMENDED_MAX_TOKENS)
+                    data.setdefault(CONF_TEMPERATURE, RECOMMENDED_TEMPERATURE)
+                    data.setdefault(CONF_TOP_P, RECOMMENDED_TOP_P)
                     return self.async_create_entry(
-                        title=user_input.pop(CONF_NAME, DEFAULT_CONVERSATION_NAME),
-                        data=user_input,
+                        title=title,
+                        data=data,
                     )
                 return self.async_update_and_abort(
                     self._get_entry(),
