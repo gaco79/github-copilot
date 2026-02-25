@@ -2,20 +2,13 @@
 
 This custom component provides a Home Assistent integration to interact with GitHub Copilot.
 
-## Roadmap
+A choice of AI models is available. Make sure to consult [GitHub documentation](https://docs.github.com/en/copilot/concepts/billing/copilot-requests#model-multipliers) for pricing.
 
-[ ] Allow OAuth login to GitHub
-  * Existing Github integration which already achieves this is provided in information/github/ folder
-  
-[ ] Allow user to choose which model should be used to fulfil requests for a given service
-  * List of available models availabe via GitHub REST API. See information/github-REST-api/ folder for details
-  * Provide model information from the API.
-  * Link to [GitHub Model Multipliers](https://docs.github.com/en/copilot/concepts/billing/copilot-requests#model-multipliers) to explain costs of using different models.
-  * Allow user to create multiple services, each using a different model
+Conversation agent and AI Task entities can be created. Different entities can use different models.
 
-[ ] Each service should provide a `conversation agent` and `AI Task` device / entity.
+## Development Environment
 
-## Environment
-
- * Place code for this integration in the custom_component/ folder
- * Use `docker compose` to spin up an instance of Home Assistant. It should be possible to add the integration there.
+ * Clone this repo
+ * Make sure you have docker installed
+ * Place code for this integration in the custom_components/github_copilot/ folder
+ * Use `docker compose` to spin up an instance of Home Assistant. It should now be possible to add the integration there.
