@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
 from aiogithubapi import (
@@ -15,6 +16,7 @@ from aiogithubapi.const import OAUTH_USER_LOGIN
 import voluptuous as vol
 
 from homeassistant.config_entries import (
+    SOURCE_REAUTH,
     ConfigEntry,
     ConfigEntryState,
     ConfigFlow,
@@ -105,6 +107,16 @@ class GitHubCopilotConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return await self.async_step_device(user_input)
 
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> ConfigFlowResult:
+        """Perform reauth upon an authentication error."""
+        self._device = None
+        self._login = None
+        self._login_device = None
+        self.login_task = None
+        return await self.async_step_device()
+
     async def async_step_device(
         self,
         user_input: dict[str, Any] | None = None,
@@ -163,6 +175,12 @@ class GitHubCopilotConfigFlow(ConfigFlow, domain=DOMAIN):
         """Create the config entry after successful login."""
         if TYPE_CHECKING:
             assert self._login is not None
+
+        if self.source == SOURCE_REAUTH:
+            return self.async_update_reload_and_abort(
+                self._get_reauth_entry(),
+                data_updates={CONF_ACCESS_TOKEN: self._login.access_token},
+            )
 
         return self.async_create_entry(
             title=DEFAULT_CONVERSATION_NAME,
