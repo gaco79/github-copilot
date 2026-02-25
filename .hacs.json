@@ -1,9 +1,5 @@
 {
     "name": "GitHub Copilot",
     "content_in_root": false,
-    "domains": [
-        "github_copilot"
-    ],
-    "filename": "custom_components/github_copilot",
     "render_readme": true
 }
