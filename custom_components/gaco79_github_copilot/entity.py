@@ -286,6 +286,13 @@ class GitHubCopilotBaseLLMEntity(Entity):
             if tools:
                 kwargs["tools"] = tools
 
+            LOGGER.debug(
+                "Sending request to GitHub Models API (model=%s, messages=%d, tools=%d)",
+                model,
+                len(messages),
+                len(tools),
+            )
+
             try:
                 stream = await client.chat.completions.create(**kwargs)
             except openai.AuthenticationError as err:
@@ -307,7 +314,6 @@ class GitHubCopilotBaseLLMEntity(Entity):
             ]
 
             if not chat_log.unresponded_tool_results:
-                break
                 break
         else:
             LOGGER.warning(
