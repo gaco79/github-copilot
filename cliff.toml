@@ -1,0 +1,85 @@
+# Git-cliff configuration - generates CHANGELOG.md from conventional commits
+# Adjust sections/filters to match your commit conventions if needed
+
+[git]
+# Tag pattern used to identify releases (example: v1.2.3)
+tag_pattern = "v*"
+
+[output]
+# File to write changelog to when using `git cliff -o`
+file = "CHANGELOG.md"
+# Name used for the unreleased section
+unreleased = "Unreleased"
+
+[conventional]
+# Enable conventional commit parsing
+enabled = true
+
+[[sections]]
+title = "Added"
+description = "New features"
+filter = "type = 'feat' or type = 'feature'"
+
+[[sections]]
+title = "Changed"
+description = "Notable changes to existing functionality"
+filter = "type = 'change' or type = 'chore' or type = 'refactor'"
+
+[[sections]]
+title = "Deprecated"
+description = "Soon-to-be removed features"
+filter = "type = 'deprecate' or scope = 'deprecated'"
+
+[[sections]]
+title = "Removed"
+description = "Removed features or functionality"
+filter = "type = 'remove' or type = 'removed'"
+
+[[sections]]
+title = "Fixed"
+description = "Bug fixes"
+filter = "type = 'fix'"
+
+[[sections]]
+title = "Security"
+description = "Security related changes"
+filter = "type = 'security'"
+
+[[sections]]
+title = "Documentation"
+description = "Documentation only changes"
+filter = "type = 'docs'"
+
+[[sections]]
+title = "Performance"
+description = "Performance improvements"
+filter = "type = 'perf' or type = 'performance'"
+
+[[sections]]
+title = "Tests"
+description = "Tests and test-related changes"
+filter = "type = 'test' or scope = 'tests'"
+
+[[sections]]
+title = "Miscellaneous"
+description = "Other changes that don't fit above"
+filter = "! (type = 'feat' or type = 'fix' or type = 'perf' or type = 'docs' or type = 'refactor' or type = 'chore' or type = 'test' or type = 'security')"
+
+[template]
+# Basic markdown template for changelog rendering. Customize as needed.
+file = ""
+content = '''# Changelog
+
+All notable changes to this project will be documented in this file.
+
+{{#releases}}
+## {{name}}{{#date}} - {{date}}{{/date}}
+{{#sections}}
+### {{title}}
+{{#items}}
+- {{#breaking}}**BREAKING:** {{/breaking}}{{scope}}{{#scope}}: {{/scope}}{{subject}} ({{hash}})
+{{/items}}
+{{/sections}}
+{{/releases}}
+'''
+
