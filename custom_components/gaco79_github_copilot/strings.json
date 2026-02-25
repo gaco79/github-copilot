@@ -28,6 +28,13 @@
             }
         }
     },
+    "entity": {
+        "sensor": {
+            "rate_limit_remaining": {
+                "name": "Rate limit remaining"
+            }
+        }
+    },
     "config_subentries": {
         "ai_task_data": {
             "abort": {

@@ -36,3 +36,6 @@ RECOMMENDED_CONVERSATION_OPTIONS: dict[str, Any] = {
 }
 
 RECOMMENDED_AI_TASK_OPTIONS: dict[str, Any] = {}
+
+# Dispatcher signal for rate limit updates (format: SIGNAL_RATE_LIMIT_UPDATED_{entry_id})
+SIGNAL_RATE_LIMIT_UPDATED = f"{DOMAIN}_rate_limit_updated"

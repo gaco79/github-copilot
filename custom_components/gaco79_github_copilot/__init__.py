@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
+
 import openai
 
 from homeassistant.config_entries import ConfigEntry
@@ -10,11 +12,20 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.httpx_client import get_async_client
 
-from .const import GITHUB_MODELS_BASE_URL
+from .const import GITHUB_MODELS_BASE_URL, LOGGER
 
-PLATFORMS = (Platform.AI_TASK, Platform.CONVERSATION)
+PLATFORMS = (Platform.AI_TASK, Platform.CONVERSATION, Platform.SENSOR)
 
-type GitHubCopilotConfigEntry = ConfigEntry[openai.AsyncOpenAI]
+
+@dataclass
+class GitHubCopilotData:
+    """Runtime data stored on the config entry."""
+
+    client: openai.AsyncOpenAI
+    rate_limit: dict[str, str | None] = field(default_factory=dict)
+
+
+type GitHubCopilotConfigEntry = ConfigEntry[GitHubCopilotData]
 
 
 async def async_setup_entry(
@@ -36,7 +47,7 @@ async def async_setup_entry(
     except openai.OpenAIError as err:
         raise ConfigEntryNotReady(err) from err
 
-    entry.runtime_data = client
+    entry.runtime_data = GitHubCopilotData(client=client)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
