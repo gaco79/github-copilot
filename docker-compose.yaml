@@ -1,0 +1,13 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
+      - ./custom_component:/config/custom_components/github_copilot
+    ports:
+      - "8123:8123"
+    environment:
+      - TZ=Europe/London

@@ -1,0 +1,1 @@
+"""Github Copilot Integration for Home Assistant"""
