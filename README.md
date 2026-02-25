@@ -10,9 +10,19 @@ This custom component provides a Home Assistent integration to interact with Git
 
 A choice of AI models is available. Make sure to consult [GitHub documentation](https://docs.github.com/en/copilot/concepts/billing/copilot-requests#model-multipliers) for pricing.
 
-Conversation agent and AI Task entities can be created. Different entities can use different models.
+Conversation agent and AI Task entities. Different entities can use different models.
 
-## Development Environment
+It's early days and although I think it's working, there will be issues. If you find a problem, please help by `opening the integration in HACS`, clicking the `three-dot menu` at the top right, and then clicking `Open Issue`
+
+## Installation
+
+### HACS (recommended)
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=gaco79&repository=github-copilot&category=integration)
+
+# Development Environment
+
+If you want to help develop this integration
 
  * Clone this repo
  * Make sure you have docker installed
