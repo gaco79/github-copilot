@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import base64
 import json
 from collections.abc import AsyncGenerator, Callable, Iterable
+from mimetypes import guess_file_type
 from typing import TYPE_CHECKING, Any
 
 import openai
 from openai.types.chat import (
     ChatCompletionAssistantMessageParam,
+    ChatCompletionContentPartImageParam,
+    ChatCompletionContentPartTextParam,
     ChatCompletionMessageParam,
     ChatCompletionMessageToolCallParam,
     ChatCompletionSystemMessageParam,
@@ -56,11 +60,12 @@ def _format_tool(
 
 def _convert_content_to_messages(
     content: Iterable[conversation.Content],
+    attachment_map: dict[int, list[ChatCompletionContentPartImageParam]] | None = None,
 ) -> list[ChatCompletionMessageParam]:
     """Convert HA chat log content to OpenAI chat completion messages."""
     messages: list[ChatCompletionMessageParam] = []
 
-    for item in content:
+    for i, item in enumerate(content):
         if isinstance(item, conversation.SystemContent):
             if item.content:
                 messages.append(
@@ -70,9 +75,23 @@ def _convert_content_to_messages(
                 )
         elif isinstance(item, conversation.UserContent):
             if item.content:
-                messages.append(
-                    ChatCompletionUserMessageParam(role="user", content=item.content)
-                )
+                img_parts = (attachment_map or {}).get(i, [])
+                if img_parts:
+                    messages.append(
+                        ChatCompletionUserMessageParam(
+                            role="user",
+                            content=[
+                                ChatCompletionContentPartTextParam(
+                                    type="text", text=item.content
+                                ),
+                                *img_parts,
+                            ],
+                        )
+                    )
+                else:
+                    messages.append(
+                        ChatCompletionUserMessageParam(role="user", content=item.content)
+                    )
         elif isinstance(item, conversation.AssistantContent):
             msg = ChatCompletionAssistantMessageParam(role="assistant")
             if item.content:
@@ -206,8 +225,48 @@ class GitHubCopilotBaseLLMEntity(Entity):
         model = options.get(CONF_CHAT_MODEL, RECOMMENDED_CHAT_MODEL)
         client: openai.AsyncOpenAI = self.entry.runtime_data
 
+        # Pre-process image attachments from user content before entering the loop
+        attachment_map: dict[int, list[ChatCompletionContentPartImageParam]] = {}
+        for i, item in enumerate(chat_log.content):
+            if (
+                isinstance(item, conversation.UserContent)
+                and getattr(item, "attachments", None)
+            ):
+
+                def _read_attachments(
+                    attachments: list[Any] = item.attachments,  # type: ignore[assignment]
+                ) -> list[ChatCompletionContentPartImageParam]:
+                    parts: list[ChatCompletionContentPartImageParam] = []
+                    for attachment in attachments:
+                        path = attachment.path
+                        mime_type = attachment.mime_type
+                        if not path.exists():
+                            raise HomeAssistantError(f"`{path}` does not exist")
+                        if mime_type is None:
+                            mime_type = guess_file_type(path)[0]
+                        if not mime_type or not mime_type.startswith("image/"):
+                            raise HomeAssistantError(
+                                f"Only images are supported, `{path}` is not an image file"
+                            )
+                        base64_image = base64.b64encode(path.read_bytes()).decode(
+                            "utf-8"
+                        )
+                        parts.append(
+                            ChatCompletionContentPartImageParam(
+                                type="image_url",
+                                image_url={
+                                    "url": f"data:{mime_type};base64,{base64_image}"
+                                },
+                            )
+                        )
+                    return parts
+
+                attachment_map[i] = await self.hass.async_add_executor_job(
+                    _read_attachments
+                )
+
         for _iteration in range(MAX_TOOL_ITERATIONS):
-            messages = _convert_content_to_messages(chat_log.content)
+            messages = _convert_content_to_messages(chat_log.content, attachment_map)
 
             kwargs: dict[str, Any] = {
                 "model": model,
