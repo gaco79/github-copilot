@@ -12,10 +12,11 @@
   ],
   "documentation": "https://github.com/gaco79/github-copilot",
   "integration_type": "service",
-  "iot_class": "cloud_polling",
+  "iot_class": "cloud",
   "requirements": [
     "openai>=1.0.0",
-    "aiogithubapi>=22.11.0"
+    "aiogithubapi>=22.11.0",
+    "voluptuous_openapi"
   ],
   "version": "0.0.1"
 }

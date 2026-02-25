@@ -258,3 +258,13 @@ class GitHubCopilotBaseLLMEntity(Entity):
 
             if not chat_log.unresponded_tool_results:
                 break
+                break
+        else:
+            LOGGER.warning(
+                "Maximum tool iterations (%s) reached for entity %s with unresolved tool results",
+                MAX_TOOL_ITERATIONS,
+                self.entity_id,
+            )
+            raise HomeAssistantError(
+                "Maximum tool iterations reached with unresolved tool calls"
+            )
