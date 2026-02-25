@@ -16,6 +16,15 @@
     "step": {
       "device": {
         "title": "Authenticate with GitHub"
+      },
+      "model": {
+        "data": {
+          "chat_model": "Model"
+        },
+        "data_description": {
+          "chat_model": "Select a model from the GitHub Models catalog"
+        },
+        "title": "Select model"
       }
     }
   },

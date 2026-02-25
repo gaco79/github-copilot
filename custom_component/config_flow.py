@@ -54,7 +54,7 @@ from .const import (
 )
 
 
-async def _fetch_models(hass: HomeAssistant, access_token: str) -> list[str]:
+async def _fetch_models(hass: HomeAssistant, access_token: str) -> list[SelectOptionDict]:
     """Fetch available models from the GitHub Models catalog."""
     session = async_get_clientsession(hass)
     try:
@@ -69,10 +69,19 @@ async def _fetch_models(hass: HomeAssistant, access_token: str) -> list[str]:
         ) as response:
             if response.status == 200:
                 data = await response.json()
-                return [model["id"] for model in data if "id" in model]
+                options: list[SelectOptionDict] = []
+                for model in data:
+                    if "id" not in model:
+                        continue
+                    model_id = model["id"]
+                    summary = model.get("summary", "")
+                    label = f"{model_id} - {summary}" if summary else model_id
+                    options.append(SelectOptionDict(value=model_id, label=label))
+                if options:
+                    return options
     except Exception:  # noqa: BLE001
         LOGGER.debug("Could not fetch models from catalog, using default")
-    return [RECOMMENDED_CHAT_MODEL]
+    return [SelectOptionDict(value=RECOMMENDED_CHAT_MODEL, label=RECOMMENDED_CHAT_MODEL)]
 
 
 class GitHubCopilotConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -87,6 +96,7 @@ class GitHubCopilotConfigFlow(ConfigFlow, domain=DOMAIN):
         self._device: GitHubDeviceAPI | None = None
         self._login: GitHubLoginOauthModel | None = None
         self._login_device: GitHubLoginDeviceModel | None = None
+        self._access_token: str | None = None
 
     async def async_step_user(
         self,
@@ -163,7 +173,7 @@ class GitHubCopilotConfigFlow(ConfigFlow, domain=DOMAIN):
         self,
         user_input: dict[str, Any] | None = None,
     ) -> ConfigFlowResult:
-        """Create the config entry after successful login."""
+        """Store token and proceed to model selection."""
         if TYPE_CHECKING:
             assert self._login is not None
 
@@ -173,23 +183,59 @@ class GitHubCopilotConfigFlow(ConfigFlow, domain=DOMAIN):
                 data_updates={CONF_ACCESS_TOKEN: self._login.access_token},
             )
 
-        return self.async_create_entry(
-            title=DEFAULT_CONVERSATION_NAME,
-            data={CONF_ACCESS_TOKEN: self._login.access_token},
-            subentries=[
+        self._access_token = self._login.access_token
+        return await self.async_step_model()
+
+    async def async_step_model(
+        self,
+        user_input: dict[str, Any] | None = None,
+    ) -> ConfigFlowResult:
+        """Let the user select a model from the GitHub Models catalog."""
+        if TYPE_CHECKING:
+            assert self._access_token is not None
+
+        if user_input is not None:
+            selected_model = user_input[CONF_CHAT_MODEL]
+            conv_options = RECOMMENDED_CONVERSATION_OPTIONS.copy()
+            conv_options[CONF_CHAT_MODEL] = selected_model
+            ai_task_options = RECOMMENDED_AI_TASK_OPTIONS.copy()
+            ai_task_options[CONF_CHAT_MODEL] = selected_model
+            return self.async_create_entry(
+                title=DEFAULT_CONVERSATION_NAME,
+                data={CONF_ACCESS_TOKEN: self._access_token},
+                subentries=[
+                    {
+                        "subentry_type": "conversation",
+                        "data": conv_options,
+                        "title": DEFAULT_CONVERSATION_NAME,
+                        "unique_id": None,
+                    },
+                    {
+                        "subentry_type": "ai_task_data",
+                        "data": ai_task_options,
+                        "title": DEFAULT_AI_TASK_NAME,
+                        "unique_id": None,
+                    },
+                ],
+            )
+
+        model_options = await _fetch_models(self.hass, self._access_token)
+
+        return self.async_show_form(
+            step_id="model",
+            data_schema=vol.Schema(
                 {
-                    "subentry_type": "conversation",
-                    "data": RECOMMENDED_CONVERSATION_OPTIONS,
-                    "title": DEFAULT_CONVERSATION_NAME,
-                    "unique_id": None,
-                },
-                {
-                    "subentry_type": "ai_task_data",
-                    "data": RECOMMENDED_AI_TASK_OPTIONS,
-                    "title": DEFAULT_AI_TASK_NAME,
-                    "unique_id": None,
-                },
-            ],
+                    vol.Required(
+                        CONF_CHAT_MODEL, default=RECOMMENDED_CHAT_MODEL
+                    ): SelectSelector(
+                        SelectSelectorConfig(
+                            options=model_options,
+                            mode=SelectSelectorMode.DROPDOWN,
+                            custom_value=True,
+                        )
+                    ),
+                }
+            ),
         )
 
     async def async_step_could_not_register(
@@ -215,7 +261,7 @@ class GitHubCopilotSubentryFlowHandler(ConfigSubentryFlow):
     """Flow for managing GitHub Copilot subentries (services)."""
 
     options: dict[str, Any]
-    _models: list[str]
+    _models: list[SelectOptionDict]
 
     @property
     def _is_new(self) -> bool:
@@ -255,8 +301,9 @@ class GitHubCopilotSubentryFlowHandler(ConfigSubentryFlow):
         )
         # Ensure the current model is in the list
         current_model = options.get(CONF_CHAT_MODEL, RECOMMENDED_CHAT_MODEL)
-        if current_model not in self._models:
-            self._models.insert(0, current_model)
+        model_values = [opt["value"] for opt in self._models]
+        if current_model not in model_values:
+            self._models.insert(0, SelectOptionDict(value=current_model, label=current_model))
 
         hass_apis: list[SelectOptionDict] = [
             SelectOptionDict(label=api.name, value=api.id)
