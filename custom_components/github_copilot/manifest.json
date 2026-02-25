@@ -1,11 +1,13 @@
 {
-    "domain": "github_copilot",
+    "domain": "gaco79_github_copilot",
     "name": "GitHub Copilot",
     "after_dependencies": [
         "assist_pipeline",
         "intent"
     ],
-    "codeowners": [],
+    "codeowners": [
+        "@gaco79"
+    ],
     "config_flow": true,
     "dependencies": [
         "conversation"
