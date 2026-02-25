@@ -83,11 +83,9 @@ async def _fetch_models(hass: HomeAssistant, access_token: str) -> list[SelectOp
                     if "id" not in model:
                         continue
                     model_id = model["id"]
-                    option = SelectOptionDict(value=model_id, label=model_id)
                     summary = model.get("summary", "")
-                    if summary:
-                        option["description"] = summary
-                    options.append(option)
+                    label = f"{model_id} - {summary}" if summary else model_id
+                    options.append(SelectOptionDict(value=model_id, label=label))
                 if options:
                     return options
     except Exception:  # noqa: BLE001
