@@ -1,5 +1,7 @@
 {
     "name": "GitHub Copilot",
     "content_in_root": false,
-    "render_readme": true
+    "render_readme": true,
+    "zip_release": true,
+    "filename": "github_copilot.zip"
 }
