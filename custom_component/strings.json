@@ -2,8 +2,11 @@
   "config": {
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_service%]",
-      "could_not_register": "Could not register with GitHub. Please try again.",
+      "could_not_register": "Could not register integration with GitHub. Please try again.",
       "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    },
+    "progress": {
+      "wait_for_device": "Open {url}, and paste the following code to authorize the integration: \n```\n{code}\n```"
     },
     "error": {
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
@@ -12,7 +15,6 @@
     },
     "step": {
       "device": {
-        "description": "To link your GitHub account, open [{url}]({url}) in your browser and enter the code: **{code}**",
         "title": "Authenticate with GitHub"
       }
     }

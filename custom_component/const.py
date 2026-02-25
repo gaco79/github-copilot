@@ -11,10 +11,8 @@ from homeassistant.helpers import llm
 DOMAIN = "github_copilot"
 LOGGER: logging.Logger = logging.getLogger(__package__)
 
-# GitHub OAuth App Client ID (device flow)
-# Register an OAuth App at https://github.com/settings/applications/new
-# and replace this placeholder with the actual Client ID.
-GITHUB_OAUTH_CLIENT_ID = "Ov23liYmSHPzRe2Gq8Dy"
+# GitHub OAuth App Client ID (device flow) - same app used by the HA GitHub integration
+GITHUB_OAUTH_CLIENT_ID = "1440cafcc86e3ea5d6a2"
 
 # GitHub Models API
 GITHUB_MODELS_BASE_URL = "https://models.github.ai/inference"
